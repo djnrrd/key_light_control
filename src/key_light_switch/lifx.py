@@ -1,25 +1,38 @@
+from typing import Union
 import lifxlan
 from lifxlan.errors import WorkflowException
-import sys
+from lifxlan.multizonelight import MultiZoneLight
 
 
-def get_key_light():
+def get_key_light() -> Union[MultiZoneLight, None]:
+    """
+    Get the object representing the key light, currently hard coded to 'Back Strip')
+
+    :return: The light object or None
+    """
     lan = lifxlan.LifxLAN(6)
     retry = 0
+    light = None
     while retry < 3:
         try:
-            light = lan.get_device_by_name('Back Strip')
+            light = lan.get_device_by_name("Back Strip")
             if light:
                 retry = 3
             else:
                 retry += 1
         except WorkflowException as E:
-            light = None
             retry += 1
     return light
 
 
-def power_light(light, state):
+def power_light(light: MultiZoneLight, state: str) -> bool:
+    """
+    Set the power state of the light object to either 'On' or 'Off'
+
+    :param light: The key light object
+    :param state: 'on' or 'off'
+    :return: Success state
+    """
     retry = 0
     ret_value = False
     while retry < 3:
@@ -32,7 +45,13 @@ def power_light(light, state):
     return ret_value
 
 
-def set_blue_daylight(light):
+def set_blue_daylight(light: MultiZoneLight) -> bool:
+    """
+    Set the colour and brightness of the key light object to Blue Daylight
+
+    :param light: The key light object
+    :return: Success state
+    """
     retry = 0
     ret_value = False
     while retry < 3:
@@ -45,16 +64,22 @@ def set_blue_daylight(light):
     return ret_value
 
 
-def toggle_light(light):
+def toggle_light(light: MultiZoneLight) -> bool:
+    """
+    Toggle the power status of the key light object between 'On' and 'Off'
+
+    :param light: The key light object
+    :return: Success state
+    """
     retry = 0
     ret_value = False
     while retry < 3:
         try:
             state = light.get_power()
             if state > 0:
-                result = power_light(light, 'off')
+                result = power_light(light, "off")
             else:
-                result = power_light(light, 'on')
+                result = power_light(light, "on")
             if result:
                 retry = 3
                 ret_value = True
@@ -63,24 +88,3 @@ def toggle_light(light):
         except WorkflowException as E:
             retry += 1
     return ret_value
-
-
-def main():
-    # Get the light and make sure we found it
-    key_light = get_key_light()
-    if key_light:
-        power_state = toggle_light(key_light)
-        if power_state:
-            blue = set_blue_daylight(key_light)
-            if blue:
-                sys.exit(0)
-            else:
-                sys.exit(3)
-        else:
-            sys.exit(2)
-    else:
-        sys.exit(1)
-
-
-if __name__ == '__main__':
-    main()
