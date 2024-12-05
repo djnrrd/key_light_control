@@ -63,24 +63,3 @@ def toggle_light(light):
         except WorkflowException as E:
             retry += 1
     return ret_value
-
-
-def main():
-    # Get the light and make sure we found it
-    key_light = get_key_light()
-    if key_light:
-        power_state = toggle_light(key_light)
-        if power_state:
-            blue = set_blue_daylight(key_light)
-            if blue:
-                sys.exit(0)
-            else:
-                sys.exit(3)
-        else:
-            sys.exit(2)
-    else:
-        sys.exit(1)
-
-
-if __name__ == '__main__':
-    main()
