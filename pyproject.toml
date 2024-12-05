@@ -1,13 +1,16 @@
 [tool.poetry]
-name = "key-light-control"
+name = "key-light-switch"
 version = "0.1.0"
 description = "A short script for connecting to a LIFX LED strip"
 authors = ["djnrrd <djnrrd@gmail.com>"]
-readme = "README.md"
+readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = "^3.13"
 lifxlan = "^1.2.8"
+
+[tool.poetry.scripts]
+toggle_key_light = "key_light_switch.__main__:main"
 
 
 [build-system]
