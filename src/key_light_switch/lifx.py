@@ -1,9 +1,10 @@
+from typing import Union
 import lifxlan
 from lifxlan.errors import WorkflowException
-import sys
+from lifxlan.multizonelight import MultiZoneLight
 
 
-def get_key_light():
+def get_key_light() -> Union[MultiZoneLight, None]:
     lan = lifxlan.LifxLAN(6)
     retry = 0
     while retry < 3:
@@ -19,7 +20,7 @@ def get_key_light():
     return light
 
 
-def power_light(light, state):
+def power_light(light: MultiZoneLight, state: str) -> bool:
     retry = 0
     ret_value = False
     while retry < 3:
@@ -32,7 +33,7 @@ def power_light(light, state):
     return ret_value
 
 
-def set_blue_daylight(light):
+def set_blue_daylight(light: MultiZoneLight) -> bool:
     retry = 0
     ret_value = False
     while retry < 3:
@@ -45,7 +46,7 @@ def set_blue_daylight(light):
     return ret_value
 
 
-def toggle_light(light):
+def toggle_light(light: MultiZoneLight) -> bool:
     retry = 0
     ret_value = False
     while retry < 3:
